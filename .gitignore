@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+data/
+data_old/
+scripts_old/
+yolo_results/
+qwen_results/
+qwen-thermal/
+*.pt
