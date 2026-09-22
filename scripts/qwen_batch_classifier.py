@@ -30,7 +30,9 @@ from qwen_classifier import (IMG_EXTS, KPT_NAMES, MAX_PIXELS, MOD_HINTS, PROMPT,
                              consensus, frame_number, parse)
 
 CHUNK = 256          # images handed to vLLM per call; bounds RAM, vLLM batches within it
-MAX_MODEL_LEN = 8192  # ~1k image tokens + prompt + 2048 reply; keeps KV cache small
+# Real requests are ~1k image tokens + prompt + 2048 reply, but vLLM's startup check
+# sizes a worst-case image from the processor defaults, which needs more room
+MAX_MODEL_LEN = 32768
 QUANT = {4: "bitsandbytes", 8: "fp8", 16: None}  # fp8 runs weight-only on A100
 
 
@@ -56,7 +58,7 @@ def main():
     out_file = args.out or args.data_dir / "qwen_detections.json"
 
     llm = LLM(model=args.model, dtype="bfloat16", quantization=QUANT[args.bits],
-              max_model_len=MAX_MODEL_LEN, limit_mm_per_prompt={"image": 1})
+              max_model_len=MAX_MODEL_LEN, limit_mm_per_prompt={"image": 1, "video": 0})
     proc = AutoProcessor.from_pretrained(args.model)
     key = args.model.split("/")[-1].lower()  # e.g. "qwen3.5-9b" = source name in the viewer
 

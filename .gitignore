@@ -14,5 +14,8 @@ scripts_old/
 yolo_results/
 qwen_results/
 qwen-thermal/
-*.ptlogs/
 *.pt
+
+# Slurm logs (folder is kept so sbatch can write into it)
+logs/*
+!logs/.gitkeep
