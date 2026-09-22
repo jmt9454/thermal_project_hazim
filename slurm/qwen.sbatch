@@ -22,7 +22,7 @@ RESULTS=/scratch/$USER/results
 mkdir -p "$RESULTS"
 OUT=$RESULTS/$(basename "$DATA")_$SCRIPT.json
 
-module load anaconda3
+module load anaconda3 cuda/13.0.2
 # activate by path: activating by name fails on Palmetto
 ENV_PATH=$HOME/.conda/envs/thermal_project
 source activate "$ENV_PATH"
