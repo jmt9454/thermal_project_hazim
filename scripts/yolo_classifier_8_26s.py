@@ -115,8 +115,7 @@ def main():
                     **{name: detect(model, img) for name, model in models.items()},
                 }
             print(f"done: {ep.name}/{mod.name}")
-
-    out_file.write_text(json.dumps(out))
+            out_file.write_text(json.dumps(out))  # save per folder so a crash keeps finished work
     print(f"wrote {out_file}")
 
 

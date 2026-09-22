@@ -14,4 +14,5 @@ scripts_old/
 yolo_results/
 qwen_results/
 qwen-thermal/
+*.ptlogs/
 *.pt

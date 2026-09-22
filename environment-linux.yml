@@ -1,0 +1,25 @@
+# Portable env for Linux / Palmetto (environment.yml is the Windows export).
+#   conda env create -f environment-linux.yml
+name: thermal_project
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - torch==2.11.0
+      - torchvision==0.26.0
+      - accelerate==1.15.0
+      - bitsandbytes==0.50.2
+      - huggingface-hub==1.31.0
+      - transformers==5.17.0
+      - qwen-vl-utils==0.0.14
+      - safetensors==0.8.0
+      - tokenizers==0.23.2
+      - ultralytics==8.4.148
+      - opencv-python-headless
+      - pillow==12.3.0
+      - numpy==2.4.6
+      - polars==1.44.2
+      - tqdm==4.70.1
