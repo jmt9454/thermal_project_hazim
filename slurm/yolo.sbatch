@@ -22,7 +22,10 @@ mkdir -p "$RESULTS"
 OUT=$RESULTS/$(basename "$DATA")_$SCRIPT.json
 
 module load anaconda3
-source activate thermal_project
+# activate by path: activating by name fails on Palmetto
+ENV_PATH=$HOME/.conda/envs/thermal_project
+source activate "$ENV_PATH"
+[[ "$(which python)" == "$ENV_PATH"/* ]] || { echo "env not active: $(which python)" >&2; exit 1; }
 
 # Weights (yolov8x*.pt, yolo26x*.pt) are resolved relative to the working dir
 cd "$SLURM_SUBMIT_DIR/scripts"

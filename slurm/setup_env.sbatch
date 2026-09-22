@@ -13,20 +13,21 @@
 # no -u: conda's activate scripts reference unset variables
 set -eo pipefail
 [ -d "$SLURM_SUBMIT_DIR/scripts" ] || { echo "submit from the repo root" >&2; exit 1; }
-ENV=thermal_project
+# activate by path: activating by name fails on Palmetto
+ENV_PATH=$HOME/.conda/envs/thermal_project
 
 module load anaconda3
 export LD_PRELOAD=""  # Palmetto FAQ fix for conda errors after loading anaconda3
 export PIP_NO_CACHE_DIR=1 HF_HOME=/scratch/$USER/hf_cache
 
 # conda-forge only: the defaults channel needs an interactive ToS accept
-if [ -d "$HOME/.conda/envs/$ENV" ]; then
-    echo "reusing existing env $ENV"
+if [ -x "$ENV_PATH/bin/python" ]; then
+    echo "reusing existing env $ENV_PATH"
 else
-    conda create -y -n $ENV -c conda-forge --override-channels python=3.11 pip
+    conda create -y -p "$ENV_PATH" -c conda-forge --override-channels python=3.11 pip
 fi
-source activate $ENV
-echo "python: $(which python)"
+source activate "$ENV_PATH"
+[[ "$(which python)" == "$ENV_PATH"/* ]] || { echo "env not active: $(which python)" >&2; exit 1; }
 
 # plain pip (not conda env create) so the log shows each download
 pip install --prefer-binary vllm ultralytics==8.4.148 bitsandbytes accelerate \

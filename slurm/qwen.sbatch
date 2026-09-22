@@ -23,7 +23,10 @@ mkdir -p "$RESULTS"
 OUT=$RESULTS/$(basename "$DATA")_$SCRIPT.json
 
 module load anaconda3
-source activate thermal_project
+# activate by path: activating by name fails on Palmetto
+ENV_PATH=$HOME/.conda/envs/thermal_project
+source activate "$ENV_PATH"
+[[ "$(which python)" == "$ENV_PATH"/* ]] || { echo "env not active: $(which python)" >&2; exit 1; }
 
 # Keep the HF model cache off the home-dir quota
 export HF_HOME=/scratch/$USER/hf_cache
