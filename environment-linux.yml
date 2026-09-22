@@ -8,6 +8,8 @@ dependencies:
   - python=3.11
   - pip
   - pip:
+      # take an older prebuilt wheel over compiling a newer version from source
+      - --prefer-binary
       - vllm
       - ultralytics==8.4.148
       - bitsandbytes
