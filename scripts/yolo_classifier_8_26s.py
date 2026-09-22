@@ -26,7 +26,7 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # Weights download automatically on first use. Swap 'x' for n/s/m/l for speed.
-MODELS = {"yolov8": "yolov8x-pose.pt", "yolo26": "yolo26x-pose.pt"}
+MODELS = {"yolov8-pose": "yolov8x-pose.pt", "yolo26-pose": "yolo26x-pose.pt", "yolov8x": "yolov8x.pt", "yolo26x":"yolo26x.pt"}
 IMG_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}
 
 # COCO 17-keypoint names, in the order YOLO pose models output them
