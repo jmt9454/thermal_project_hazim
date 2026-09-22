@@ -10,7 +10,7 @@
 #SBATCH --output=logs/%x_%j.out
 # Submit from the repo root, one job per episode:
 #   sbatch slurm/yolo.sbatch /scratch/$USER/data/EP_3
-# Writes /scratch/$USER/results/<episode>_yolo_classifier_8_26s.json
+# Writes /scratch/$USER/results/<parent>_<episode>_yolo_classifier_8_26s.json
 # no -u: conda's activate scripts reference unset variables
 set -eo pipefail
 SCRIPT=yolo_classifier_8_26s
@@ -19,7 +19,9 @@ DATA=$(realpath "${1:?pass one episode folder, e.g. /scratch/\$USER/data/EP_3}")
 [ -d "$SLURM_SUBMIT_DIR/scripts" ] || { echo "submit from the repo root" >&2; exit 1; }
 RESULTS=/scratch/$USER/results
 mkdir -p "$RESULTS"
-OUT=$RESULTS/$(basename "$DATA")_$SCRIPT.json
+# e.g. .../data/EP_3 -> data_EP_3, so same-named episodes in different folders don't collide
+TAG=$(basename "$(dirname "$DATA")")_$(basename "$DATA")
+OUT=$RESULTS/${TAG}_$SCRIPT.json
 
 module load anaconda3
 # activate by path: activating by name fails on Palmetto
