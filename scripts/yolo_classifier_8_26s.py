@@ -109,11 +109,13 @@ def main():
                 if img.suffix.lower() not in IMG_EXTS:
                     continue
                 n = str(frame_number(img))
+                try:  # a corrupt/truncated image shouldn't kill the whole run
+                    dets = {name: detect(model, img) for name, model in models.items()}
+                except Exception as e:
+                    print(f"skipped {img}: {e}")
+                    continue
                 # Group by episode -> frame n -> modality, so modalities of a frame sit together
-                out.setdefault(ep.name, {}).setdefault(n, {})[mod.name] = {
-                    "file": str(img),
-                    **{name: detect(model, img) for name, model in models.items()},
-                }
+                out.setdefault(ep.name, {}).setdefault(n, {})[mod.name] = {"file": str(img), **dets}
             print(f"done: {ep.name}/{mod.name}")
             out_file.write_text(json.dumps(out))  # save per folder so a crash keeps finished work
     print(f"wrote {out_file}")

@@ -37,9 +37,13 @@ QUANT = {4: "bitsandbytes", 8: "fp8", 16: None}  # fp8 runs weight-only on A100
 
 
 def load(path):
-    """-> (image downscaled for the model, original (w, h)).
+    """-> (image downscaled for the model, original (w, h)), or None if unreadable.
     Replies use 0-1000 relative coords, so shrinking here doesn't change them."""
-    img = Image.open(path).convert("RGB")
+    try:  # a corrupt/truncated image shouldn't kill the whole run
+        img = Image.open(path).convert("RGB")
+    except Exception as e:
+        print(f"skipped {path}: {e}")
+        return None
     w, h = img.size
     scale = (MAX_PIXELS / (w * h)) ** 0.5
     if scale < 1:
@@ -81,8 +85,10 @@ def main():
 
                 paths = [p for p in sorted(mod.iterdir()) if p.suffix.lower() in IMG_EXTS]
                 for i in range(0, len(paths), CHUNK):
-                    chunk = paths[i:i + CHUNK]
-                    imgs = list(pool.map(load, chunk))
+                    loaded = [(p, r) for p, r in zip(paths[i:i + CHUNK], pool.map(load, paths[i:i + CHUNK])) if r]
+                    if not loaded:
+                        continue
+                    chunk, imgs = zip(*loaded)
                     reqs = [{"prompt": text, "multi_modal_data": {"image": img}} for img, _ in imgs]
                     replies = llm.generate(reqs, greedy, use_tqdm=False)
                     runs = llm.generate(reqs, sampled, use_tqdm=False) if sampled else [None] * len(reqs)
