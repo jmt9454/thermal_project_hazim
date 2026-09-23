@@ -1,3 +1,4 @@
+#Author: Hazim
 import json
 import math
 import numpy as np
@@ -200,9 +201,7 @@ for json_path in json_files:
         # Save modified JSON
         # --------------------------------------------------
 
-        output_path = json_path.with_name(
-            json_path.stem + "_with_rf_frame.json"
-        )
+        output_path = json_path
 
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
