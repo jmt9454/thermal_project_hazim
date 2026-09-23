@@ -9,6 +9,7 @@ wheels/
 # Virtual environments
 .venv
 data/
+results/
 data_old/
 scripts_old/
 yolo_results/
