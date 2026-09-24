@@ -8,7 +8,7 @@ Detections: a detections.db built from the classifier JSONs by results_db.py.
 Matching: a detection hits a target when the target's point lies inside its box
 (grown by --margin px). Detections are taken highest confidence first and each
 claims at most one unclaimed target (nearest to the box centre), so a duplicate
-box on the same person is a false positive. Animal targets (the pig) are never
+box on the same person is a false positive. Animal targets (pigs, dogs) are never
 positives: a box on one counts as a false positive and is reported as animal_hits.
 Out-of-frame targets are ignored.
 
@@ -38,7 +38,7 @@ from PIL import Image
 
 from results_db import open_db, unpack_boxes
 
-ANIMALS = ("Pig",)  # target names containing these are not people
+ANIMALS = ("pig", "dog")  # target names containing these, in any case, are not people (pig1, dog2, SK_Pig_Skeleton)
 THRESHOLDS = np.round(np.arange(0, 1.0001, 0.05), 2)
 
 
@@ -70,7 +70,7 @@ def load_targets(path, w, h):
             continue
         names.append(t["name"])
         xy.append((t["screen_x"] * w, t["screen_y"] * h))
-        human.append(not any(a in t["name"] for a in ANIMALS))
+        human.append(not any(a in t["name"].lower() for a in ANIMALS))
         visible.append(bool(t["visible"]))
     return names, np.array(xy).reshape(-1, 2), np.array(human, bool), np.array(visible, bool)
 
